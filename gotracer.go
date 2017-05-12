@@ -40,9 +40,8 @@ package gotracer
 
 import (
 	"fmt"
+	"github.com/jacobsa/go-serial/serial"
 	"time"
-
-	"github.com/tarm/serial"
 )
 
 // TracerStatus contain status information read from Tracer
@@ -93,24 +92,40 @@ var (
 
 // Status reads information from the Tracer connected on specified portName.
 func Status(portName string) (t TracerStatus, err error) {
-	c := &serial.Config{Name: portName, Baud: 115200, ReadTimeout: time.Second * 3}
 
-	port, err := serial.OpenPort(c)
+	// Set up options.
+	options := serial.OpenOptions{
+		PortName:        portName,
+		BaudRate:        115200,
+		DataBits:        8,
+		StopBits:        1,
+		MinimumReadSize: 4,
+	}
+
+	port, err := serial.Open(options)
+
 	if err != nil {
 		return
 	}
 	defer port.Close()
 
 	buffer := make([]byte, 120)
+
 	for _, r := range queryStateCommand {
 		if _, err = port.Write(r.data); err != nil {
 			return
 		}
 
+		// fmt.Printf("request = % x\n", r.data)
+
 		b := make([]byte, r.respLen)
 		if _, err = port.Read(b); err != nil {
+			fmt.Println("err=%s", err)
 			return
+
 		}
+
+		// fmt.Printf("response = % x\n", b)
 
 		copy(buffer[r.offset:], b)
 	}
