@@ -1,13 +1,18 @@
-== gotracer
 
-Go package to communicate with the EPsolar/EPever Tracer series solar charge controllers with the Modbus RTU protocol.
+== gotracer Library
+
+Go package to communicate with the EPsolar/EPever Tracer series solar charge controller using the
+Modbus RTU protocol.
 
 It has been tested with the EPsolar Tracer4215BN and Tracer2210A solar charge controller
-connected to a computer using the EPsolar link:https://www.amazon.com/gp/product/B016RU8JUY/ref=oh_aui_detailpage_o09_s00?ie=UTF8&psc=1[RS485 to USB] cable.
+connected to a computer using the EPsolar
+link:https://www.amazon.com/gp/product/B016RU8JUY/ref=oh_aui_detailpage_o09_s00?ie=UTF8&psc=1[RS485 to USB]
+converter.
 
-The EPsolar RS485 to USB cable appears to use the Exar UART chip link:https://www.exar.com/content/document.ashx?id=20394&languageid=1033&type=Datasheet&partnumber=XR21B1411&filename=XR21B1411.pdf&part=XR21B1411[XR21B1411]. 
+The EPsolar RS485 to USB converter appears to use the Exar UART chip
+link:https://www.exar.com/content/document.ashx?id=20394&languageid=1033&type=Datasheet&partnumber=XR21B1411&filename=XR21B1411.pdf&part=XR21B1411[XR21B1411]. 
 
-== OS support for the Epsolar RS485 to USB cable
+== OS support for the Epsolar RS485 to USB converter
 
 === Ubuntu 16.04 (xenial)
 
@@ -24,7 +29,7 @@ https://github.com/kasbert/epsolar-tracer/tree/master/xr_usb_serial_common-1a
 
 (this patch was possible because of information from Exar support)
 
-Installation steps for the patch device driver:
+Installation steps for the patched device driver:
 
 ----
 $ lsusb |grep Exar # verify that RS485 - USB converter has been detected correctly
@@ -41,28 +46,22 @@ $ sudo bash
 # insmod ./xr_usb_serial_common.ko # load the new Exar kernel module
 ----
 
-=== Rasbian 8.0 (jessie)
+=== Raspbian 8.0 (jessie)
+
+Raspbian requires setup of the environment to compile kernel modules:
 
 ----
 # sudo bash
-# apt-get install raspberrypi-kernel-headers build-essential # setup env. to compile new Exar kernel module
-$ lsusb |grep Exar # verify that RS485 - USB converter has been detected correctly
-Bus 001 Device 012: ID 04e2:1411 Exar Corp.
-$ git clone https://github.com/kasbert/epsolar-tracer.git
-$ sudo bash
-# cd epsolar-tracer/xr_usb_serial_common-1a
-# make modules_install  # compile and install the new Exar kernel module
-# rmmod cdc-acm # unload the existing Exar kernel module 
-# modprobe -r usbserial
-# modprobe usbserial
-# lsmod |grep xr_usb xr_usb_serial_common    40960  0
-# modprobe -r xr_usb_serial_common
-# insmod ./xr_usb_serial_common.ko # load the new Exar kernel module
+# apt-get install raspberrypi-kernel-headers build-essential
 ----
+
+Remaining installation steps are the same as for Ubuntu. 
 
 === Windows 10
 
-The Exar driver is included in the link:http://www.epsolarpv.com/en/index.php/Technical/download[EPsolar Solar Station Monitor] software package.
+The Exar driver is included in the
+link:http://www.epsolarpv.com/en/index.php/Technical/download[EPsolar Solar Station Monitor]
+software package.
 
 RS485 mode is enable by default.
 
@@ -115,14 +114,14 @@ requests issued by the EPsolar Station Monitor software:
 
 image::epsolar_tracer_serial_analyser.png[]
 
-(screenshot shows: Windows link:https://freeserialanalyzer.com/features[device monitoring studio]
-(similar to wireshark)
+The screenshot shows a Modbus trace for one gotracer.Status() request (create with the Windows link:https://freeserialanalyzer.com/features[device monitoring studio](similar to wireshark)). 
 
 == Example
 
-This example program reads the status from the EPSolar Tracer and displays in on the screen.
+This example program reads the 'real time' data from the EPSolar Tracer and displays in on the screen.
 
-NOTE: =/dev/ttyeXRUSB0= is the device name used on Ubuntu/Raspbian. Windows use different device names (example: COM3).
+NOTE: /dev/ttyeXRUSB0 is the typical Exar device name used on Ubuntu/Raspbian. Windows use different
+device names (for example: COM3).
 
 test.go:
 
@@ -133,7 +132,6 @@ package main
 import (
 	"fmt"
 	"log"
-
 	"github.com/spagettikod/gotracer"
 )
 
@@ -177,7 +175,8 @@ EnergyGeneratedTotal: 6.65
 
 == Roadmap
 
-* Add missing status information: PV Working State, Charging State, Battery State and Controller Working State
+* Add missing status information: PV Working State, Charging State, Battery State and Controller
+Working State
 * Turn load on and off
 * Read device information: model, software version and serial number
 * Read device parameters
