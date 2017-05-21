@@ -120,7 +120,7 @@ The screenshot shows a Modbus trace for one gotracer.Status() request (create wi
 
 This example program reads the 'real time' data from the EPSolar Tracer and displays in on the screen.
 
-NOTE: /dev/ttyeXRUSB0 is the typical Exar device name used on Ubuntu/Raspbian. Windows use different
+NOTE: /dev/ttyXRUSB0 is the typical Exar device name used on Ubuntu/Raspbian. Windows use different
 device names (for example: COM3).
 
 test.go:
