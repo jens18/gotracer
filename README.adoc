@@ -44,6 +44,8 @@ $ sudo bash
 # lsmod |grep xr_usb xr_usb_serial_common    40960  0
 # modprobe -r xr_usb_serial_common
 # insmod ./xr_usb_serial_common.ko # load the new Exar kernel module
+# ls -l /dev/ttyXRUSB0 
+crw-rw---- 1 root dialout 266, 0 Jun  5 15:44 /dev/ttyXRUSB0
 ----
 
 === Raspbian 8.0 (jessie)
